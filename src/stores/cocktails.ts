@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { fetchCocktail } from '@/utils/api'
+import { fetchCocktail } from '@/api/index'
 import type { CocktailsState, CocktailCode } from '@/types/cocktail'
 
 export const useCocktailsStore = defineStore('cocktails', () => {

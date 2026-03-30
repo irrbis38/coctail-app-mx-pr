@@ -1,23 +1,36 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { ROUTES } from '@/types/router'
 import { COCKTAIL_DATA } from '@/constants/cocktails'
 
 const router = createRouter({
   history: createWebHistory(),
-  routes: ROUTES
+  routes: [
+    {
+      path: '/',
+      name: 'Home',
+      redirect: '/margarita'
+    },
+    {
+      path: '/:code',
+      name: 'Cocktail',
+      component: () => import('@/pages/Cocktail/index.vue'),
+      props: true,
+      meta: { requiresCocktail: true }
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'NotFound',
+      component: () => import('@/pages/NotFound/index.vue')
+    }
+  ]
 })
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requiresCocktail) {
-    const code = to.params.code as string;
-
-    const exists = COCKTAIL_DATA.some(c => c.code === code);
-
-    if (!exists) {
-      return next({ name: 'NotFound' });
-    }
+    const code = to.params.code as string
+    const exists = COCKTAIL_DATA.some(cocktail => cocktail.code === code)
+    if (!exists) return next({ name: 'NotFound' })
   }
-  next();
-});
+  next()
+})
 
-export default router;
+export default router

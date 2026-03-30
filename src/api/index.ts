@@ -13,7 +13,7 @@ export async function fetchCocktail(code: string): Promise<CocktailType[]> {
     const data = await response.json()
     return data.drinks || []
   } catch (error) {
-    console.error(`API error for ${code}:`, error)
+    console.error(`Error for ${code}:`, error)
     throw error
   }
 }

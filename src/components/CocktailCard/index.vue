@@ -1,41 +1,13 @@
 <script setup lang="ts">
   import { computed } from 'vue';
   import type { CocktailType } from '@/types/cocktail';
+  import { getIngredients } from '@/helpers/getIngredients';
 
   const props = defineProps<{
     cocktail: CocktailType;
   }>();
 
-  function isValidKey<T extends Record<string, any>>(
-    obj: T,
-    key: string
-  ): key is Extract<keyof T, string> {
-    return key in obj;
-  }
-
-  const ingredients = computed(() => {
-    const items = [];
-
-    for (let i = 1; i <= 15; i++) {
-      const iKey = `strIngredient${i}`;
-      const mKey = `strMeasure${i}`;
-
-      if (isValidKey(props.cocktail, iKey)) {
-        const name = props.cocktail[iKey];
-
-        if (typeof name === 'string' && name.trim()) {
-          const measure = isValidKey(props.cocktail, mKey) ? props.cocktail[mKey] : '';
-
-          items.push({
-            name: name.trim(),
-            measure: typeof measure === 'string' ? measure.trim() : '',
-          });
-        }
-      }
-    }
-
-    return items;
-  });
+  const ingredients = computed(() => getIngredients(props.cocktail));
 </script>
 
 <template>
@@ -49,7 +21,9 @@
         :key="index"
         class="cocktail-card__ingredients-item"
       >
-        <span class="cocktail-card__ingredients-item-name">{{ item.name }}</span>
+        <span class="cocktail-card__ingredients-item-name">
+          {{ item.name }}
+        </span>
         <span
           v-if="item.measure"
           class="cocktail-card__ingredients-item-dots"
