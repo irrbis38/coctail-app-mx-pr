@@ -15,6 +15,7 @@
 
   const currentCocktailsList = computed(() => store.cocktails[props.code] ?? []);
   const loading = computed(() => store.isLoading(props.code));
+  const errorMessage = computed(() => store.errorMessage(props.code));
 
   const loadData = () => getCocktail(props.code);
 
@@ -31,6 +32,12 @@
       class="loading"
     >
       Loading...
+    </div>
+    <div
+      v-else-if="errorMessage"
+      class="error"
+    >
+      {{ errorMessage }}
     </div>
     <template v-else>
       <div
