@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { computed, onMounted, watch } from 'vue';
+  import { computed, onMounted, watch, ref } from 'vue';
   import { useCocktailsStore } from '@/stores/cocktails';
   import type { CocktailCode } from '@/types/cocktail';
   import CocktailCard from '@/components/CocktailCard';
@@ -16,7 +16,16 @@
   const currentCocktailsList = computed(() => store.cocktails[props.code] ?? []);
   const loading = computed(() => store.isLoading(props.code));
 
-  const loadData = () => getCocktail(props.code);
+  const errorMessage = ref<string | null>(null);
+
+  const loadData = async () => {
+    errorMessage.value = null;
+    try {
+      await getCocktail(props.code);
+    } catch (error) {
+      errorMessage.value = error instanceof Error ? error.message : 'Failed to load cocktails';
+    }
+  };
 
   onMounted(loadData);
   watch(() => props.code, loadData);
@@ -31,6 +40,12 @@
       class="loading"
     >
       Loading...
+    </div>
+    <div
+      v-else-if="errorMessage"
+      class="error"
+    >
+      {{ errorMessage }}
     </div>
     <template v-else>
       <div
