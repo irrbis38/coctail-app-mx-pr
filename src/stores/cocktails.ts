@@ -16,10 +16,6 @@ export const useCocktailsStore = defineStore('cocktails', () => {
     state.value.loading[code] || false
   )
 
-  const hasError = computed(() => (code: CocktailCode) =>
-    !!state.value.error[code]
-  )
-
   const errorMessage = computed(() => (code: CocktailCode) =>
     state.value.error[code] || ''
   )
@@ -44,7 +40,6 @@ export const useCocktailsStore = defineStore('cocktails', () => {
       state.value.error[code] = error instanceof Error
         ? error.message
         : 'Failed to load cocktails'
-      throw error
     } finally {
       state.value.loading[code] = false
     }
@@ -53,7 +48,6 @@ export const useCocktailsStore = defineStore('cocktails', () => {
   return {
     cocktails,
     isLoading,
-    hasError,
     errorMessage,
     getCocktail
   }
